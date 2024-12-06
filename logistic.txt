@@ -1,0 +1,40 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler,LabelEncoder
+from sklearn.linear_model import LogisticRegression
+import matplotlib.pyplot as plt
+
+df=pd.read_csv("User_Data.csv")
+label_encoder=LabelEncoder()
+df['Gender']=label_encoder.fit_transform(df['Gender'])
+
+X=df[['Age','EstimatedSalary']]
+y=df['Purchased']
+print(X)
+print(y)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+scaler=StandardScaler()
+X_train=scaler.fit_transform(X_train)
+X_test=scaler.transform(X_test)
+
+model=LogisticRegression(random_state=0)
+model.fit(X_train,y_train)
+
+y_pred=model.predict(X_test)
+def plot_decision_boundary(X,y,model,title):
+   x_min,x_max= X[:, 0].min()- 1, X[:, 0].max()+ 1
+   y_min,y_max=X[:, 1].min()- 1, X[:, 1].max()+ 1
+   xx,yy=np.meshgrid(np.arange(x_min,x_max,0.01),np.arange(y_min,y_max,0.01))
+   Z=model.predict(np.c_[xx.ravel(),yy.ravel()])
+   Z=Z.reshape(xx.shape)
+   plt.contourf(xx,yy,Z,alpha=0.5,cmap='Paired')
+   plt.scatter(X[:, 0], X[:, 1],c=y,edgecolor='k',marker='o')
+   plt.title(title)
+   plt.xlabel('Age')
+   plt.ylabel('Estimated Salary')
+   plt.show()
+
+plot_decision_boundary(X_train,y_train,model,title="Logistic Regression(training)")
+plot_decision_boundary(X_test,y_test,model,title="Logistic Regression(testing")
