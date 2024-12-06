@@ -1,0 +1,21 @@
+import pandas as pd
+iris = pd.read_csv('C:/Users/Admin/Downloads/9e7fdfb8189f0cdf5d73a494e4a6392a-aaecbd14aeaa468cd749528f291aa8a30c2ea09e/iris_dataset.csv')
+
+from sklearn import datasets
+data = datasets.load_breast_cancer()
+X = data.data
+y = data.target
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.2, random_state=0)
+
+from sklearn.tree import DecisionTreeClassifier
+model = DecisionTreeClassifier(criterion='gini')
+model.fit(X_train, y_train)
+expected = y_test
+predicted = model.predict(X_test)
+from sklearn import metrics
+
+print("Accuracy:",metrics.confusion_matrix(expected, predicted))
+sns.boxplot(data=iris)
+plt.show()
